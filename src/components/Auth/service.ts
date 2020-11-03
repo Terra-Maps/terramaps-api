@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import UserModel, { IUserModel, IUser } from '../User/model';
+import { IUserModel, IUser, UserModel } from '../User/model';
 import { IAuthService } from './interface';
 
 /**

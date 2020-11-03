@@ -133,6 +133,11 @@ router.delete('/:id', UserComponent.remove);
 
 router.put('/', UserComponent.update);
 
+router.post('/addMetadata', UserComponent.addMetadata);
+
+
+router.get('/find/salt', UserComponent.findSalt);
+
 
 /**
  * @export {express.Router}

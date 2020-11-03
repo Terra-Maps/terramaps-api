@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import UserModel, { IUserModel } from './model';
+import { UserModel, IUserModel, TerraMapsMetadata, ITerraMapsMetaData } from './model';
 import UserValidation from './validation';
 import { IUserService } from './interface';
 import { Types } from 'mongoose';
@@ -89,6 +89,26 @@ const UserService: IUserService = {
             throw new Error(error.message);
         }
     },
+
+    async addMetadata(metaData: ITerraMapsMetaData): Promise<boolean> {
+        try {
+            await TerraMapsMetadata.create(metaData);
+            return true;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+    async findSalt(geoHash: string, userAddress: string): Promise<ITerraMapsMetaData> {
+        try {
+            const filter = {
+                geo_hash: geoHash,
+                user_address: userAddress
+            }
+            return await TerraMapsMetadata.findOne(filter);
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
 
 
 

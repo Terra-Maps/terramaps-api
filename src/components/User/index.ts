@@ -1,6 +1,6 @@
 import UserService from './service';
 import { HttpError } from '../../config/error';
-import { IUserModel } from './model';
+import { ITerraMapsMetaData, IUserModel } from './model';
 import { NextFunction, Request, Response } from 'express';
 import JWTTokenService from '../Session/service';
 const { request, gql } = require('graphql-request')
@@ -94,6 +94,37 @@ export async function update(req: Request, res: Response, next: NextFunction): P
         const deserializedToken: any = await JWTTokenService.VerifyToken(terraMapsDecodedHeaderToken);
         res.status(200).json({
             success: true
+        });
+    } catch (error) {
+        next(new HttpError(error.message.status, error.message));
+    }
+}
+
+export async function addMetadata(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const metadata: ITerraMapsMetaData = {
+            geo_hash: req.body.geo_hash,
+            salt: req.body.salt,
+            user_address: req.body.user_address
+        }
+        await UserService.addMetadata(metadata);
+        res.status(200).json({
+            success: true
+        });
+    } catch (error) {
+        next(new HttpError(error.message.status, error.message));
+    }
+}
+export async function findSalt(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const geoHash = req.query.geo_hash.toString();
+        const userAddress = req.query.user_address.toString();
+
+
+        const metadata = await UserService.findSalt(geoHash, userAddress);
+        res.status(200).json({
+            success: true,
+            data: metadata
         });
     } catch (error) {
         next(new HttpError(error.message.status, error.message));

@@ -36,6 +36,12 @@ export interface IProvider {
     name: string;
 }
 
+export interface ITerraMapsMetaData {
+    geo_hash: string;
+    user_address: string;
+    salt: string;
+}
+
 
 /**
  * @export
@@ -99,39 +105,22 @@ export interface IUserModel extends Document {
     lastUpdated?: Date;
 }
 
+export interface ITerraMapsMetadataModel extends Document {
+    geo_hash: string;
+    user_address: string;
+    salt: string;
+}
+
 const ProviderSchema: Schema = new Schema({
     name: String
 });
 
-/**
- * @swagger
- * components:
- *  schemas:
- *    UserSchema:
- *      required:
- *        - email
- *        - name
- *      properties:
- *        id:
- *          type: string
- *        name:
- *          type: string
- *        email:
- *          type: string
- *        password:
- *          type: string
- *        passwordResetToken:
- *          type: string
- *        passwordResetExpires:
- *          type: string
- *          format: date
- *        tokens:
- *          type: array
- *    Users:
- *      type: array
- *      items:
- *        $ref: '#/components/schemas/UserSchema'
- */
+const TerraMapsSchema: Schema = new Schema({
+    geo_hash: String,
+    user_address: String,
+    salt: String
+})
+
 const UserSchema: Schema = new Schema({
     provider_profile: {
         id: { type: Number, unique: true },
@@ -172,6 +161,8 @@ const UserSchema: Schema = new Schema({
 
 
 
-export default connections.db.model<IUserModel>('UserModel', UserSchema);
+export const UserModel = connections.db.model<IUserModel>('UserModel', UserSchema);
+export const TerraMapsMetadata = connections.db.model<ITerraMapsMetadataModel>('TerraMapsMetadata', TerraMapsSchema);
+
 
 
