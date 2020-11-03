@@ -1,0 +1,304 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Node-Typescript API",
+    "version": "1.0.0",
+    "description": "A sample API"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    }
+  ],
+  "paths": {
+    "/auth/github/": {
+      "get": {
+        "description": "sign up user to application with github",
+        "tags": [
+          "auth"
+        ],
+        "requestBody": {
+          "description": "sign up body"
+        },
+        "responses": {
+          "301": {
+            "description": "user successfuly signed in",
+            "content": {
+              "appication/json": {
+                "example": {
+                  "status": 301
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users": {
+      "get": {
+        "description": "Get all stored users in Database",
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Users"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create new User",
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "user creation request body",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSchema"
+              },
+              "example": {
+                "name": "userName",
+                "email": "test.user@mail.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "return created user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/UserSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{id}": {
+      "get": {
+        "description": "Get user by userId",
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "the unique userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "return user by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/UserSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete user by userId",
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "the unique userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "return deleted user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/UserSchema"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "OrganizationSchema": {
+        "required": [
+          "email",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "passwordResetToken": {
+            "type": "string"
+          },
+          "passwordResetExpires": {
+            "type": "string",
+            "format": "date"
+          },
+          "tokens": {
+            "type": "array"
+          }
+        }
+      },
+      "Users": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/UserSchema"
+        }
+      },
+      "UserSchema": {
+        "required": [
+          "email",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "passwordResetToken": {
+            "type": "string"
+          },
+          "passwordResetExpires": {
+            "type": "string",
+            "format": "date"
+          },
+          "tokens": {
+            "type": "array"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "status",
+          "message"
+        ],
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "HTTP status code",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "description": "Error description",
+            "example": "User created"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "sid"
+      }
+    }
+  },
+  "tags": []
+}
