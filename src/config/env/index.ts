@@ -14,6 +14,11 @@ interface IConfig {
         CLIENT_SECRET: string;
         CALLBACK_URL: string;
     };
+    google?: {
+        CLIENT_ID: string;
+        CLIENT_SECRET: string;
+        CALLBACK_URL: string;
+    };
     gitlab?: {
         CLIENT_ID: string;
         CLIENT_SECRET: string;
@@ -85,7 +90,13 @@ const development: IConfig = {
     },
     privateKey: {
         PRIVATE_KEY: process.env.PRIVATE_KEY
+    },
+    google: {
+        CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+        CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+        CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL
     }
+
 };
 
 const production: IConfig = {

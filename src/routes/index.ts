@@ -46,6 +46,7 @@ export function init(app: express.Application): void {
      */
     app.use('/auth', AuthRouter);
 
+
     /**
     * @description Forwards any requests to the /invite URI to our AuthRouter
     * @constructs

@@ -1,6 +1,7 @@
 import * as http from 'http';
 import * as passport from 'passport';
 import * as passportGithub from 'passport-github';
+import * as passportGoogle from 'passport-google-oauth2';
 import config from '../env/index';
 import HttpError from '../error';
 import { NextFunction, Request, Response } from 'express';
@@ -8,11 +9,27 @@ import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 
 
-// tslint:disable-next-line: typedef
-const passportGitlab = require('passport-gitlab2');
-
 type GithubStrategyType = typeof passportGithub.Strategy;
 const GithubStrategy: GithubStrategyType = passportGithub.Strategy;
+
+type GoogleStrategyType = typeof passportGoogle.Strategy
+const GoogleStrategy: GoogleStrategyType = passportGoogle.Strategy
+
+
+passport.use(new GoogleStrategy(
+    {
+        clientID: config.google.CLIENT_ID,
+        clientSecret: config.google.CLIENT_SECRET,
+        callbackURL: config.google.CALLBACK_URL,
+        passReqToCallback: true
+    },
+    function (request: any, accessToken: any, refreshToken: any, profile: any, done: any): Promise<void> {
+        console.log(profile);
+        return request;
+    }
+));
+
+
 /**
  * @description
  * determines, which data of the user object should be stored in the session.

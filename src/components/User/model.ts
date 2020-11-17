@@ -6,27 +6,33 @@ import { Document, Schema } from 'mongoose';
  * @interface IProfile
  */
 export interface IProfile {
-    id: number;
-    username: string;
-    avatar_url: string;
-    name: string;
-    url: string;
-    html_url: string;
-    followers_url: string;
-    following_url: string;
-    gists_url: string;
-    starred_url: string;
-    subscriptions_url: string;
-    organizations_url: string;
-    repos_url: string;
-    events_url: string;
-    received_events_url: string;
-    public_repos: number;
-    public_gists: number;
-    followers: number;
-    following: number;
-    email: string;
+    id?: number;
+    username?: string;
+    avatar_url?: string;
+    name?: string;
+    url?: string;
+    html_url?: string;
+    followers_url?: string;
+    following_url?: string;
+    gists_url?: string;
+    starred_url?: string;
+    subscriptions_url?: string;
+    organizations_url?: string;
+    repos_url?: string;
+    events_url?: string;
+    received_events_url?: string;
+    public_repos?: number;
+    public_gists?: number;
+    followers?: number;
+    following?: number;
+    email?: string;
 }
+export interface IWallet {
+    address: string;
+    passphrase: string;
+}
+
+
 
 /**
  * @export
@@ -52,7 +58,7 @@ export interface IUser {
     provider: IProvider;
     dateOfEntry?: Date;
     lastUpdated?: Date;
-    organizations?: [string[]];
+    wallet?: IWallet
 }
 
 
@@ -62,26 +68,26 @@ export interface IUser {
  * @extends {Document}
  */
 export interface IProfileModel extends Document {
-    id: number;
-    username: string;
-    avatar_url: string;
-    name: string;
-    email: string;
-    url: string;
-    html_url: string;
-    followers_url: string;
-    following_url: string;
-    gists_url: string;
-    starred_url: string;
-    subscriptions_url: string;
-    organizations_url: string;
-    repos_url: string;
-    events_url: string;
-    received_events_url: string;
-    public_repos: number;
-    public_gists: number;
-    followers: number;
-    following: number;
+    id?: number;
+    username?: string;
+    avatar_url?: string;
+    name?: string;
+    email?: string;
+    url?: string;
+    html_url?: string;
+    followers_url?: string;
+    following_url?: string;
+    gists_url?: string;
+    starred_url?: string;
+    subscriptions_url?: string;
+    organizations_url?: string;
+    repos_url?: string;
+    events_url?: string;
+    received_events_url?: string;
+    public_repos?: number;
+    public_gists?: number;
+    followers?: number;
+    following?: number;
 }
 
 /**
@@ -103,6 +109,12 @@ export interface IUserModel extends Document {
     provider: IProviderModel;
     dateOfEntry?: Date;
     lastUpdated?: Date;
+    wallet?: IWalletModel
+}
+
+export interface IWalletModel extends Document {
+    address: string;
+    passphrase: string;
 }
 
 export interface ITerraMapsMetadataModel extends Document {
@@ -152,6 +164,10 @@ const UserSchema: Schema = new Schema({
     lastUpdated: {
         type: Date,
         default: new Date()
+    },
+    wallet: {
+        passphrase: String,
+        address: String
     }
 }, {
     collection: 'users',

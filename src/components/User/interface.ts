@@ -1,4 +1,4 @@
-import { ITerraMapsMetaData, IUserModel } from './model';
+import { ITerraMapsMetaData, IUser, IUserModel } from './model';
 
 /**
  * @export
@@ -42,5 +42,6 @@ export interface IUserService {
 
     addMetadata(metaData: ITerraMapsMetaData): Promise<boolean>;
     findSalt(geoHash: string, userAddress: string): Promise<ITerraMapsMetaData>;
+    storeGoogleMetada(body: IUser): Promise<IUserModel>;
 
 }

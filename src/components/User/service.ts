@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { UserModel, IUserModel, TerraMapsMetadata, ITerraMapsMetaData } from './model';
+import { UserModel, IUserModel, TerraMapsMetadata, ITerraMapsMetaData, IUser } from './model';
 import UserValidation from './validation';
 import { IUserService } from './interface';
 import { Types } from 'mongoose';
@@ -105,6 +105,27 @@ const UserService: IUserService = {
                 user_address: userAddress
             }
             return await TerraMapsMetadata.findOne(filter);
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+    async storeGoogleMetada(body: IUser): Promise<IUserModel> {
+        try {
+
+            const filter = {
+                'provider_profile.username': body.provider_profile.email
+
+            }
+            const verify = await UserModel.findOne(filter);
+            if (verify) {
+                const filterById = {
+                    '_id': Types.ObjectId(verify._id)
+                }
+                await UserModel.findOneAndUpdate(filterById, body);
+                return verify;
+            }
+            const val = await UserModel.create(body);
+            return val;
         } catch (error) {
             throw new Error(error.message);
         }

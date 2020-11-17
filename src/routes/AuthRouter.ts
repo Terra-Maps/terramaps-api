@@ -3,17 +3,15 @@ import * as passport from 'passport';
 import AuthService from '../components/Auth/service';
 import { ITerraMapsSessionDto } from '../components/Session/interface';
 import JWTTokenService from '../components/Session/service';
-import { IUserModel } from '../components/User/model';
+import { IProfile, IProvider, IProviderModel, IUser, IUserModel, IWallet } from '../components/User/model';
 import * as config from '../config/env/index';
 import console = require('console');
 import { Types } from 'mongoose';
+import UserService from '../components/User/service';
 const { createAppAuth } = require("@octokit/auth-app");
 const { Octokit } = require("@octokit/rest");
 const axios = require('axios').default;
 
-// const fullPath = path.join(__dirname, "argoappgit.pem");
-
-// const readAsAsync = fs.readFileSync(fullPath, 'utf8');
 /**
  * @constant {express.Router}
  */
@@ -38,6 +36,11 @@ const router: Router = Router();
  *              status: 301
  */
 router.get('/github', passport.authenticate('github'));
+
+router.get('/google', passport.authenticate('google', {
+    scope:
+        ['email', 'profile']
+}));
 
 router.get(
     '/github/callback',
@@ -78,6 +81,59 @@ router.delete('/logout', async (req, res) => {
     await req.logOut();
     req.session = null;
     res.status(200).json({ success: true });
+});
+
+router.get('/google/callback', async (req, res) => {
+    console.log(req);
+    const instanceAxios = axios.create({
+        baseURL: 'https://oauth2.googleapis.com/token',
+        timeout: 5000,
+        params: {
+            'client_id': config.default.google.CLIENT_ID,
+            'client_secret': config.default.google.CLIENT_SECRET,
+            'grant_type': 'authorization_code',
+            'redirect_uri': config.default.google.CALLBACK_URL,
+            'code': `${req.query.code}`
+        }
+    });
+    const response = await instanceAxios.post();
+
+    let resGet = await axios.get(`https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${response.data.id_token}`);
+
+    const provider: IProvider = {
+        name: 'google'
+    }
+
+    const providerProfile: IProfile = {
+        email: resGet.data.email,
+        username: resGet.data.email,
+        avatar_url: resGet.data.picture,
+        name: resGet.data.name
+    }
+
+    const wallet: IWallet = {
+        address: "",
+        passphrase: ""
+    }
+    const userModel: IUser = {
+        provider: provider,
+        provider_profile: providerProfile,
+        wallet: wallet
+    };
+    const storeData = await UserService.storeGoogleMetada(userModel);
+
+    const terraMapsSessionDto: ITerraMapsSessionDto = {
+        session_id: storeData.id,
+        access_token: "temporary_token",
+        is_active: true,
+    };
+
+    const dtos: ITerraMapsSessionDto = await JWTTokenService.findSessionOrCreate(
+        terraMapsSessionDto
+    );
+    const token: string = await JWTTokenService.generateToken(dtos);
+    res.redirect(`${config.default.argoReact.BASE_ADDRESS}/callback/github?token=${token}`);
+
 });
 
 
