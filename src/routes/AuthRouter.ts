@@ -133,7 +133,6 @@ router.get('/google/callback', async (req, res) => {
     );
     const token: string = await JWTTokenService.generateToken(dtos);
     res.redirect(`${config.default.argoReact.BASE_ADDRESS}/callback/github?token=${token}`);
-
 });
 
 

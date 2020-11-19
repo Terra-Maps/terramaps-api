@@ -138,6 +138,9 @@ router.post('/addMetadata', UserComponent.addMetadata);
 
 router.get('/find/salt', UserComponent.findSalt);
 
+router.put('/wallet/update', UserComponent.updateWalletAddress);
+
+
 
 /**
  * @export {express.Router}

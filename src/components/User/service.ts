@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { UserModel, IUserModel, TerraMapsMetadata, ITerraMapsMetaData, IUser } from './model';
+import { UserModel, IUserModel, TerraMapsMetadata, ITerraMapsMetaData, IUser, IWallet } from './model';
 import UserValidation from './validation';
 import { IUserService } from './interface';
 import { Types } from 'mongoose';
@@ -30,7 +30,7 @@ const UserService: IUserService = {
         try {
             return await UserModel.findOne({
                 _id: Types.ObjectId(id)
-            }).populate('organizations');
+            });
         } catch (error) {
             throw new Error(error.message);
         }
@@ -129,11 +129,28 @@ const UserService: IUserService = {
         } catch (error) {
             throw new Error(error.message);
         }
+    },
+
+    async updateWalletAddress(id: string, wallet: IWallet): Promise<any> {
+        try {
+
+            const filter = {
+                _id: Types.ObjectId(id)
+            };
+
+            let userModel = await UserModel.findOne(filter);
+            const update = {
+                $set: {
+                    'wallet.wallet_address': wallet.address,
+                    'wallet.passphrase': wallet.passphrase
+                }
+            };
+            await UserModel.findOneAndUpdate(filter, update);
+            return true;
+        } catch (error) {
+            throw new Error(error.message);
+        }
     }
-
-
-
-
 };
 
 export default UserService;

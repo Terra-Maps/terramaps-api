@@ -135,7 +135,7 @@ const TerraMapsSchema: Schema = new Schema({
 
 const UserSchema: Schema = new Schema({
     provider_profile: {
-        id: { type: Number, unique: true },
+        id: { type: Number },
         username: String,
         avatar_url: String,
         name: String,

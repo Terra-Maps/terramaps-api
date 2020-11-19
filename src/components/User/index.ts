@@ -131,3 +131,16 @@ export async function findSalt(req: Request, res: Response, next: NextFunction):
     }
 }
 
+export async function updateWalletAddress(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const argoDecodedHeaderToken: any = await JWTTokenService.DecodeToken(req);
+        const deserializedToken: any = await JWTTokenService.VerifyToken(argoDecodedHeaderToken);
+        await UserService.updateWalletAddress(deserializedToken.session_id, req.body);
+        res.status(200).json({
+            success: true
+        });
+    } catch (error) {
+        next(new HttpError(error.message.status, error.message));
+    }
+}
+
