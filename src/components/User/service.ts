@@ -141,7 +141,7 @@ const UserService: IUserService = {
             let userModel = await UserModel.findOne(filter);
             const update = {
                 $set: {
-                    'wallet.wallet_address': wallet.address,
+                    'wallet.address': wallet.address,
                     'wallet.passphrase': wallet.passphrase
                 }
             };
