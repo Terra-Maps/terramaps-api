@@ -111,14 +111,10 @@ router.get('/google/callback', async (req, res) => {
         name: resGet.data.name
     }
 
-    const wallet: IWallet = {
-        address: "",
-        passphrase: ""
-    }
+
     const userModel: IUser = {
         provider: provider,
-        provider_profile: providerProfile,
-        wallet: wallet
+        provider_profile: providerProfile
     };
     const storeData = await UserService.storeGoogleMetada(userModel);
 

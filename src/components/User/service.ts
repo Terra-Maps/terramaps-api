@@ -124,6 +124,11 @@ const UserService: IUserService = {
                 await UserModel.findOneAndUpdate(filterById, body);
                 return verify;
             }
+            const wallet: IWallet = {
+                address: "",
+                passphrase: ""
+            }
+            body.wallet = wallet;
             const val = await UserModel.create(body);
             return val;
         } catch (error) {
